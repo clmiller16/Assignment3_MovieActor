@@ -2,17 +2,32 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Assignment3.Data;
+using Assignment3.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Assignment3.Data;
-using Assignment3.Models;
+using Microsoft.VisualBasic;
 
-namespace Assignment3.Controllers
+namespace TheMovieDB.Controllers
 {
     public class ActorsController : Controller
     {
         private readonly ApplicationDbContext _context;
+
+        public async Task<IActionResult> GetActorPhoto(int id)
+        {
+            var actor = await _context.Actor
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (actor == null)
+            {
+                return NotFound();
+            }
+            var imageData = actor.ActorImage;
+
+            return File(imageData, "image/jpg");
+        }
 
         public ActorsController(ApplicationDbContext context)
         {
@@ -22,13 +37,15 @@ namespace Assignment3.Controllers
         // GET: Actors
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Actor.ToListAsync());
+            return _context.Actor != null ?
+                        View(await _context.Actor.ToListAsync()) :
+                        Problem("Entity set 'ApplicationDbContext.Actor'  is null.");
         }
 
         // GET: Actors/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Actor == null)
             {
                 return NotFound();
             }
@@ -39,18 +56,11 @@ namespace Assignment3.Controllers
             {
                 return NotFound();
             }
-            ActorDetailsVM adVM = new ActorDetailsVM();
-            adVM.actor = actor; 
+            ActorDetailsVM ad = new ActorDetailsVM();
+            ad.actor = actor;
 
-            var movies = new List<Movie>();
-
-            movies = await (from mt  in _context.Movie
-                            join am in _context.ActorMovie on mt.Id equals am.Id
-                            where am.Id == id
-                            select mt).ToListAsync();
-            adVM.movies = movies;
-
-            return View(adVM);
+ 
+            return View(ad);
         }
 
         // GET: Actors/Create
@@ -64,10 +74,22 @@ namespace Assignment3.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Age,Gender,Hyperlink,ActorImage")] Actor actor)
+        public async Task<IActionResult> Create([Bind("Id,Name,Age")] Actor actor, IFormFile ActorImage)
         {
+            ModelState.Remove(nameof(actor.ActorImage));
+
             if (ModelState.IsValid)
             {
+                if (ActorImage != null && ActorImage.Length > 0)
+                {
+                    var memoryStream = new MemoryStream();
+                    await ActorImage.CopyToAsync(memoryStream);
+                    actor.ActorImage = memoryStream.ToArray();
+                }
+                else
+                {
+                    actor.ActorImage = new byte[0];
+                }
                 _context.Add(actor);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -75,10 +97,16 @@ namespace Assignment3.Controllers
             return View(actor);
         }
 
+        //[Authorize(Roles = Constants.AdministratorsRole + "," + Constants.ManagersRole)]
+        //[Authorize(Roles = "AdministratorRole,ManagerRole")] //this is an OR condition!!!
+        //[Authorize(Roles = Constants.AdministratorsRole)]
+        //[Authorize(Policy = Constants.ManagerAndAdministrator)]
+        //[Authorize(Roles = Constants.Administrator + "," + Constants.Manager)]
         // GET: Actors/Edit/5
+  
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Actor == null)
             {
                 return NotFound();
             }
@@ -94,13 +122,34 @@ namespace Assignment3.Controllers
         // POST: Actors/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Age,Gender,Hyperlink,ActorImage")] Actor actor)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Age")] Actor actor, IFormFile ActorImage)
         {
             if (id != actor.Id)
             {
                 return NotFound();
+            }
+
+            ModelState.Remove(nameof(actor.ActorImage));
+
+            Actor existingActor = _context.Actor.AsNoTracking().FirstOrDefault(m => m.Id == id);
+
+            if (ActorImage != null && ActorImage.Length > 0)
+            {
+                var memoryStream = new MemoryStream();
+                await ActorImage.CopyToAsync(memoryStream);
+                actor.ActorImage = memoryStream.ToArray();
+            }
+            //grab EXISTING photo from DB in case user didn't upload a new one. Otherwise, the actor will have the photo overwritten with empty
+            else if (existingActor != null)
+            {
+                actor.ActorImage = existingActor.ActorImage;
+            }
+            else
+            {
+                actor.ActorImage = new byte[0];
             }
 
             if (ModelState.IsValid)
@@ -129,7 +178,7 @@ namespace Assignment3.Controllers
         // GET: Actors/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Actor == null)
             {
                 return NotFound();
             }
@@ -149,6 +198,10 @@ namespace Assignment3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (_context.Actor == null)
+            {
+                return Problem("Entity set 'ApplicationDbContext.Actor'  is null.");
+            }
             var actor = await _context.Actor.FindAsync(id);
             if (actor != null)
             {
@@ -161,7 +214,7 @@ namespace Assignment3.Controllers
 
         private bool ActorExists(int id)
         {
-            return _context.Actor.Any(e => e.Id == id);
+            return (_context.Actor?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

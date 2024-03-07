@@ -13,6 +13,18 @@ namespace Assignment3.Controllers
 {
     public class MoviesController : Controller
     {
+        public async Task<IActionResult> GetMoviePhoto(int id)
+        {
+            var movie = await _context.Movie
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (movie == null)
+            {
+                return NotFound();
+            }
+            var imageData = movie.MovieImage;
+            return File(imageData, "image/jpg");
+        }
+
         private readonly ApplicationDbContext _context;
 
         public MoviesController(ApplicationDbContext context)
@@ -67,10 +79,22 @@ namespace Assignment3.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,Director,Genre,ReleaseDate,Hyperlink,MovieImage")] Movie movie)
+        public async Task<IActionResult> Create([Bind("Id,Title,Description,Director,Genre,ReleaseDate,Hyperlink,MovieImage")] Movie movie, IFormFile MovieImage)
         {
+            ModelState.Remove(nameof(movie.MovieImage));
             if (ModelState.IsValid)
             {
+                if (MovieImage != null && MovieImage.Length > 0)
+                {
+                    var memoryStream = new MemoryStream();
+                    await MovieImage.CopyToAsync(memoryStream);
+                    movie.MovieImage = memoryStream.ToArray();
+                }
+                else
+                {
+                    movie.MovieImage = new byte[0];
+                }
+
                 _context.Add(movie);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -99,11 +123,28 @@ namespace Assignment3.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Director,Genre,ReleaseDate,Hyperlink,MovieImage")] Movie movie)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Director,Genre,ReleaseDate,Hyperlink,MovieImage")] Movie movie, IFormFile MovieImage)
         {
             if (id != movie.Id)
             {
                 return NotFound();
+            }
+
+            ModelState.Remove(nameof(movie.MovieImage));
+            Movie existingMovie = _context.Movie.AsNoTracking().FirstOrDefault(movie => movie.Id == id);
+
+            if(MovieImage != null && MovieImage.Length > 0)
+            {
+                var memoryStream = new MemoryStream();
+                await MovieImage.CopyToAsync(memoryStream);
+                movie.MovieImage = memoryStream.ToArray();
+            } else if (existingMovie != null)
+            {
+                movie.MovieImage = existingMovie.MovieImage;
+            }
+            else
+            {
+                movie.MovieImage = new byte[0];
             }
 
             if (ModelState.IsValid)

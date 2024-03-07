@@ -50,7 +50,10 @@
             @Html.DisplayNameFor(model => model.movie.MovieImage)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.movie.MovieImage)
+            @if (Model.movie.MovieImage != null && Model.movie.MovieImage.Length != 0)
+            {
+                <img height="150" src="@Url.Action("GetMoviePhoto", "Movies", new {Model.movie.Id})" />
+            }
         </dd>
     </dl>
 </div>
@@ -101,7 +104,10 @@
                     @Html.DisplayFor(modelItem => item.Hyperlink)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ActorImage)
+                    @if (item.ActorImage != null && item.ActorImage.Length != 0)
+                    {
+                        <img height="150" src="@Url.Action("GetActorPhoto", "Actors", new {item.Id})" />
+                    }
                 </td>
                 <td>
                     <a asp-action="Edit" asp-controller="Actors" asp-route-id="@item.Id">Edit</a> |

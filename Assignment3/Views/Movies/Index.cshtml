@@ -55,12 +55,13 @@
                 @Html.DisplayFor(modelItem => item.ReleaseDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Hyperlink)
+                    <a>@Html.DisplayFor(modelItem => item.Hyperlink)</a>
             </td>
             <td>
-                <img src="@Html.DisplayFor(modelItem => item.MovieImage)" alt="Girl in a jacket" width="500" height="600">
-
-                @Html.DisplayFor(modelItem => item.MovieImage)
+            @if (item.MovieImage != null && item.MovieImage.Length != 0)
+            {
+                <img height="150" src="@Url.Action("GetMoviePhoto", "Movies", new {item.Id})" />
+            }
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
