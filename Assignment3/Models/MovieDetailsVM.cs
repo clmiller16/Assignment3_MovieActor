@@ -7,6 +7,7 @@ namespace Assignment3.Models
         public Movie movie { get; set; }
         public string sentiment { get; set; }
         public List<Actor> actors { get; set; }
+        public PostRating postRatings { get; set; }
         // public  List<MovieWikiVM> posts { get; set; }
     }
 }

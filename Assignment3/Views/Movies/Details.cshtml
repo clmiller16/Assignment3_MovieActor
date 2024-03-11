@@ -1,4 +1,4 @@
-﻿@model Assignment3.Models.MovieWikiVM
+﻿@model Assignment3.Models.MovieDetailsVM
 
 @{
     ViewData["Title"] = "Details";
@@ -11,66 +11,66 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.oldModel.movie.Title)
+            @Html.DisplayNameFor(model => model.movie.Title)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.oldModel.movie.Title)
+            @Html.DisplayFor(model => model.movie.Title)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.oldModel.movie.Description)
+            @Html.DisplayNameFor(model => model.movie.Description)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.oldModel.movie.Description)
+            @Html.DisplayFor(model => model.movie.Description)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.oldModel.movie.Director)
+            @Html.DisplayNameFor(model => model.movie.Director)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.oldModel.movie.Director)
+            @Html.DisplayFor(model => model.movie.Director)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.oldModel.movie.Genre)
+            @Html.DisplayNameFor(model => model.movie.Genre)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.oldModel.movie.Genre)
+            @Html.DisplayFor(model => model.movie.Genre)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.oldModel.movie.ReleaseDate)
+            @Html.DisplayNameFor(model => model.movie.ReleaseDate)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.oldModel.movie.ReleaseDate)
+            @Html.DisplayFor(model => model.movie.ReleaseDate)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.oldModel.movie.Hyperlink)
+            @Html.DisplayNameFor(model => model.movie.Hyperlink)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.oldModel.movie.Hyperlink)
+            @Html.DisplayFor(model => model.movie.Hyperlink)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.oldModel.movie.MovieImage)
+            @Html.DisplayNameFor(model => model.movie.MovieImage)
         </dt>
         <dd class = "col-sm-10">
-            @if (Model.oldModel.movie.MovieImage != null && Model.oldModel.movie.MovieImage.Length != 0)
+            @if (Model.movie.MovieImage != null && Model.movie.MovieImage.Length != 0)
             {
-                <img height="150" src="@Url.Action("GetMoviePhoto", "Movies", new {Model.oldModel.movie.Id})" />
+                <img height="150" src="@Url.Action("GetMoviePhoto", "Movies", new {Model.movie.Id})" />
             }
         </dd>
                 <dt class = "col-sm-2">
-                    @Html.DisplayNameFor(model => model.oldModel.sentiment)
+                    @Html.DisplayNameFor(model => model.sentiment)
                 </dt>
                 <dd class = "col-sm-10">
-                    @Html.DisplayFor(model => model.oldModel.sentiment)
+                    @Html.DisplayFor(model => model.sentiment)
                 </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.oldModel.movie.Id">Edit</a> |
+    <a asp-action="Edit" asp-route-id="@Model?.movie.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
 
 <br />
 <h1>
-    Actors in @Html.DisplayFor(model => model.oldModel.movie.Title)
+    Actors in @Html.DisplayFor(model => model.movie.Title)
 </h1>
 <table id="indexTable" class="table">
     <thead>
@@ -94,7 +94,7 @@
     </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model.oldModel.actors)
+    @foreach (var item in Model.actors)
     {
         <tr>
             <td>
@@ -107,7 +107,7 @@
                 @Html.DisplayFor(modelItem => item.Gender)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Hyperlink)
+                <a href="@Html.DisplayFor(modelItem => item.Hyperlink)">IMDb</a>
             </td>
             <td>
                 @if (item.ActorImage != null && item.ActorImage.Length != 0)
@@ -116,8 +116,10 @@
                 }
             </td>
             <td>
-                <a asp-action="Edit" asp-controller="Actors" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-controller="Actors" asp-route-id="@item.Id">Details</a> |
+                <button class="btn btn-light" asp-action="Edit" asp-controller="Actors" asp-route-id="@item.Id">Edit</button>
+                <button class="btn btn-light" asp-action="Details" asp-controller="Actors" asp-route-id="@item.Id">Details</button>
+                @* <a asp-action="Edit" asp-controller="Actors" asp-route-id="@item.Id">Edit</a> | *@
+                @* <a asp-action="Details" asp-controller="Actors" asp-route-id="@item.Id">Details</a> | *@
             </td>
         </tr>
     }
@@ -135,14 +137,14 @@
     </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model.pages)
+    @foreach (var item in Model.postRatings.text)
     {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item)
             </td>
             <td>
-                @Html.DisplayFor(model => model.oldModel.sentiment)
+                @Html.DisplayFor(model => model.sentiment)
             </td>
         </tr>
     }

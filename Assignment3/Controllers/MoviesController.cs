@@ -132,13 +132,14 @@ namespace Assignment3.Controllers
             adVM.movie = movie;
             
             MovieWikiVM wikiVm = new MovieWikiVM();
-            
             wikiVm.oldModel = adVM;
+
+            PostRating newPost = new PostRating();
             
             var actors = new List<Actor>();
             //Get the text from WikiPedia related to the Pet description
             List<string> textToExamine = await SearchWikipediaAsync(movie.Description);
-            wikiVm.pages = textToExamine;
+            newPost.text = textToExamine;
             
             
              // = await SearchWikipediaAsync((movie.Description));
@@ -160,19 +161,21 @@ namespace Assignment3.Controllers
                 }
             }
 
-            wikiVm.sentiments = tempList;
+            newPost.sentiment = tempList;
             
             double avgResult = Math.Round(resultsTotal / validResults, 2);
-            wikiVm.oldModel.sentiment = avgResult.ToString() + ", " + CategorizeSentiment(avgResult);
+            adVM.sentiment = avgResult.ToString() + ", " + CategorizeSentiment(avgResult);
 
             actors = await (from at in _context.Actor
                             join am in _context.ActorMovie on at.Id equals am.Id
                             where am.Id == id
                             select at).ToListAsync();
-            wikiVm.oldModel.actors = actors;
+            adVM.actors = actors;
+
+            adVM.postRatings = newPost;
 
 
-            return View(wikiVm);
+            return View(adVM);
         }
 
         public static string CategorizeSentiment(double sentiment)

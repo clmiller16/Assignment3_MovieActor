@@ -55,18 +55,21 @@
                 @Html.DisplayFor(modelItem => item.ReleaseDate)
             </td>
             <td>
-                    <a>@Html.DisplayFor(modelItem => item.Hyperlink)</a>
+                <a href="@Html.DisplayFor(modelItem => item.Hyperlink)">IMDb</a>
             </td>
             <td>
             @if (item.MovieImage != null && item.MovieImage.Length != 0)
             {
-                <img height="150" src="@Url.Action("GetMoviePhoto", "Movies", new {item.Id})" />
+                <img height="150" src="@Url.Action("GetMoviePhoto", "Movies", new {item.Id})" alt="image failed to load"/>
             }
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <button class="btn btn-light" asp-action="Edit" asp-route-id="@item.Id">Edit</button>
+                <button class="btn btn-light" asp-action="Details" asp-route-id="@item.Id">Details</button>
+                <button class="btn btn-light" asp-action="Delete" asp-route-id="@item.Id">Delete</button>
+                @* <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> | *@
+                @* <a asp-action="Details" asp-route-id="@item.Id">Details</a> | *@
+                @* <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> *@
             </td>
         </tr>
 }

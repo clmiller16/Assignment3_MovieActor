@@ -43,7 +43,7 @@
                 @Html.DisplayFor(modelItem => item.Gender)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Hyperlink)
+                <a href="@Html.DisplayFor(modelItem => item.Hyperlink)">IMDb</a>
             </td>
                 <td>
                     @if (item.ActorImage != null && item.ActorImage.Length != 0)
@@ -51,11 +51,14 @@
                         <img height="150" src="@Url.Action("GetActorPhoto", "Actors", new {item.Id})" />
                     }
                 </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
+                <td>
+                                    <button class="btn btn-light" asp-action="Edit" asp-route-id="@item.Id">Edit</button>
+                                    <button class="btn btn-light" asp-action="Details" asp-route-id="@item.Id">Details</button>
+                                    <button class="btn btn-light" asp-action="Delete" asp-route-id="@item.Id">Delete</button>
+                    @* <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> | *@
+                    @* <a asp-action="Details" asp-route-id="@item.Id">Details</a> | *@
+                    @* <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> *@
+                </td>
         </tr>
 }
     </tbody>
