@@ -58,6 +58,14 @@ namespace TheMovieDB.Controllers
             }
             ActorDetailsVM ad = new ActorDetailsVM();
             ad.actor = actor;
+            
+            var movies = new List<Movie>();
+            
+            movies = await (from mt in _context.Movie
+                join am in _context.ActorMovie on mt.Id equals am.Id
+                where am.Id == id
+                select mt).ToListAsync();
+            ad.movies = movies;
 
  
             return View(ad);
