@@ -29,3 +29,12 @@ body {
 .background-color{
   background-color: #bacbe6;
 }
+
+.black-text{
+  color: black;
+  text-decoration: none;
+}
+
+.round{
+  border-radius: 50%;
+}

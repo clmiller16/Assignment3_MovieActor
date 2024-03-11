@@ -7,74 +7,74 @@
 <h1>Movies</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <button class="btn btn-light"><a class="black-text" asp-action="Create">Create New</a></button>
 </p>
-<table id="indexTable" class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Director)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Genre)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ReleaseDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Hyperlink)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MovieImage)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Director)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Genre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ReleaseDate)
-            </td>
-            <td>
-                <a href="@Html.DisplayFor(modelItem => item.Hyperlink)">IMDb</a>
-            </td>
-            <td>
-            @if (item.MovieImage != null && item.MovieImage.Length != 0)
-            {
-                <img height="150" src="@Url.Action("GetMoviePhoto", "Movies", new {item.Id})" alt="image failed to load"/>
-            }
-            </td>
-            <td>
-                <button class="btn btn-light" asp-action="Edit" asp-route-id="@item.Id">Edit</button>
-                <button class="btn btn-light" asp-action="Details" asp-route-id="@item.Id">Details</button>
-                <button class="btn btn-light" asp-action="Delete" asp-route-id="@item.Id">Delete</button>
-                @* <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> | *@
-                @* <a asp-action="Details" asp-route-id="@item.Id">Details</a> | *@
-                @* <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> *@
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+
+<div class="eggshell round">
+    <table id="indexTable" class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Description)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Director)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Genre)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ReleaseDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Hyperlink)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.MovieImage)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+    @foreach (var item in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Director)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Genre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ReleaseDate)
+                </td>
+                <td>
+                    <a target="_blank" href="@Html.DisplayFor(modelItem => item.Hyperlink)">IMDb</a>
+                </td>
+                <td>
+                @if (item.MovieImage != null && item.MovieImage.Length != 0)
+                {
+                    <img height="150" src="@Url.Action("GetMoviePhoto", "Movies", new {item.Id})" alt="image failed to load"/>
+                }
+                </td>
+                <td>
+                    <button class="btn btn-light" asp-action="Details" asp-route-id="@item.Id"><a class="black-text" asp-action="Details" asp-route-id="@item.Id">Details</a></button>
+                    <button class="btn btn-light" asp-action="Edit" asp-route-id="@item.Id"><a class="black-text" asp-action="Edit" asp-route-id="@item.Id">Edit</a></button>
+                    <button class="btn btn-light" asp-action="Delete" asp-route-id="@item.Id"><a class="black-text" asp-action="Delete" asp-route-id="@item.Id">Delete</a></button>
+                </td>
+            </tr>
+    }
+        </tbody>
+    </table>
+</div>
 @section Scripts {
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.1/css/dataTables.dataTables.min.css" integrity="sha384-zUxWDVAcow8yNu+q4VFsyZA3qWsKKGdWPW0SVjaR12LQze4SY8Nr75US6VDhbWkf" crossorigin="anonymous">
     <script src="https://cdn.datatables.net/2.0.1/js/dataTables.min.js" integrity="sha384-O1CwIpQyArpIVIf/MmRsfivHkHhSlKgnk+wOxIMeEqObjH8MoV/Ox0ue6FlCwucf" crossorigin="anonymous"></script>

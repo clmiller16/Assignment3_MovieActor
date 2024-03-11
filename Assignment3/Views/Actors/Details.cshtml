@@ -46,8 +46,8 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.actor.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <button class="btn btn-light"><a class="black-text" asp-action="Edit" asp-route-id="@Model?.actor.Id">Edit</a></button>
+    <button class="btn btn-light"><a class="black-text" asp-action="Index">Back to List</a></button>
 </div>
 
 <br />
@@ -101,7 +101,7 @@
                     @Html.DisplayFor(modelItem => item.ReleaseDate)
                 </td>
                 <td>
-                    <a href="@Html.DisplayFor(modelItem => item.Hyperlink)">IMDb</a>
+                    <a target="_blank" href="@Html.DisplayFor(modelItem => item.Hyperlink)">IMDb</a>
                 </td>
                 <td>
                     @if (item.MovieImage != null && item.MovieImage.Length != 0)
@@ -111,8 +111,8 @@
                 </td>
                 <td>
                     
-                <button class="btn btn-light" asp-action="Edit" asp-controller="Movies" asp-route-id="@item.Id">Edit</button>
-                <button class="btn btn-light" asp-action="Details" asp-controller="Movies" asp-route-id="@item.Id">Details</button>
+                <button class="btn btn-light" asp-action="Edit" asp-controller="Movies" asp-route-id="@item.Id"><a class="black-text" asp-action="Edit" asp-controller="Movies" asp-route-id="@item.Id">Edit</a></button>
+                <button class="btn btn-light" asp-action="Details" asp-controller="Movies" asp-route-id="@item.Id"><a class="black-text" asp-action="Details" asp-controller="Movies" asp-route-id="@item.Id">Details</a></button>
                     @* <a asp-action="Edit" asp-controller="Movies" asp-route-id="@item.Id">Edit</a> | *@
                     @* <a asp-action="Details" asp-controller="Movies" asp-route-id="@item.Id">Details</a> | *@
                 </td>

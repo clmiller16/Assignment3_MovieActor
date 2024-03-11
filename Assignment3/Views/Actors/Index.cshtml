@@ -7,7 +7,7 @@
 <h1>Actors</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <button class="btn btn-light"><a class="black-text" asp-action="Create">Create New</a></button>
 </p>
 <table id="indexTable" class="table">
     <thead>
@@ -43,7 +43,7 @@
                 @Html.DisplayFor(modelItem => item.Gender)
             </td>
             <td>
-                <a href="@Html.DisplayFor(modelItem => item.Hyperlink)">IMDb</a>
+                <a target="_blank" href="@Html.DisplayFor(modelItem => item.Hyperlink)">IMDb</a>
             </td>
                 <td>
                     @if (item.ActorImage != null && item.ActorImage.Length != 0)
@@ -52,9 +52,9 @@
                     }
                 </td>
                 <td>
-                                    <button class="btn btn-light" asp-action="Edit" asp-route-id="@item.Id">Edit</button>
-                                    <button class="btn btn-light" asp-action="Details" asp-route-id="@item.Id">Details</button>
-                                    <button class="btn btn-light" asp-action="Delete" asp-route-id="@item.Id">Delete</button>
+                <button class="btn btn-light" asp-action="Details" asp-route-id="@item.Id"><a class="black-text" asp-action="Details" asp-route-id="@item.Id">Details</a></button>
+                <button class="btn btn-light" asp-action="Edit" asp-route-id="@item.Id"><a class="black-text" asp-action="Edit" asp-route-id="@item.Id">Edit</a></button>
+                <button class="btn btn-light" asp-action="Delete" asp-route-id="@item.Id"><a class="black-text" asp-action="Delete" asp-route-id="@item.Id">Delete</a></button>
                     @* <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> | *@
                     @* <a asp-action="Details" asp-route-id="@item.Id">Details</a> | *@
                     @* <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> *@
