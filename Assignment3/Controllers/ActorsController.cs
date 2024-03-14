@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
+using System.Text.Json;
+using VaderSharp2;
 
 namespace TheMovieDB.Controllers
 {
@@ -41,6 +43,71 @@ namespace TheMovieDB.Controllers
                         View(await _context.Actor.ToListAsync()) :
                         Problem("Entity set 'ApplicationDbContext.Actor'  is null.");
         }
+        
+        // START NEW CODE
+        public static readonly HttpClient client = new HttpClient();
+       
+        public static string CategorizeSentiment(double sentiment)
+        {
+            if (sentiment >= -1 && sentiment < -0.6)
+            {
+                return "Extremely Negative";
+            } else if (sentiment >= -.7 && sentiment < -0.2)
+            {
+                return "Very Negative";
+            } else if (sentiment >= -.2 && sentiment < 0)
+            {
+                return "Slightly Negative";
+            }  else if (sentiment >= 0 && sentiment < 0.2)
+            {
+                return "Slightly Positive";
+            }  else if (sentiment >= 0.2 && sentiment < 0.6)
+            {
+                return "Very Positive";
+            }  else if (sentiment >= 0.6 && sentiment < 1)
+            {
+                return "Extremely Positive";
+            }
+            else
+            {
+                return "Invalid Sentiment Value";
+            }
+        }
+        public static async Task<List<string>> SearchWikipediaAsync(string searchQuery)
+        {
+            string baseUrl = "https://en.wikipedia.org/w/api.php";
+            string url = $"{baseUrl}?action=query&list=search&srlimit=100&srsearch={Uri.EscapeDataString(searchQuery)}&format=json";
+            List<string> textToExamine = new List<string>();
+            try
+            {
+                //Ask WikiPedia for a list of pages that relate to the query
+                HttpResponseMessage response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+                string responseBody = await response.Content.ReadAsStringAsync();
+                var jsonDocument = JsonDocument.Parse(responseBody);
+                var searchResults = jsonDocument.RootElement.GetProperty("query").GetProperty("search");
+                foreach (var item in searchResults.EnumerateArray())
+                {
+                    var pageId = item.GetProperty("pageid").ToString();
+                    //Ask WikiPedia for the text of each page in the query results
+                    string pageUrl = $"{baseUrl}?action=query&pageids={pageId}&prop=extracts&explaintext&format=json";
+                    HttpResponseMessage pageResponse = await client.GetAsync(pageUrl);
+                    pageResponse.EnsureSuccessStatusCode();
+                    string pageResponseBody = await pageResponse.Content.ReadAsStringAsync();
+                    var jsonPageDocument = JsonDocument.Parse(pageResponseBody);
+                    var pageContent = jsonPageDocument.RootElement.GetProperty("query").GetProperty("pages").GetProperty(pageId).GetProperty("extract").GetString();
+                    textToExamine.Add(pageContent);
+                    
+                }
+            }
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine("\nException Caught!");
+                Console.WriteLine("Message :{0} ", e.Message);
+            }
+            return textToExamine;
+        }
+        // END NEW CODE
 
         // GET: Actors/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -58,8 +125,40 @@ namespace TheMovieDB.Controllers
             }
             ActorDetailsVM ad = new ActorDetailsVM();
             ad.actor = actor;
+            PostRating newPost = new PostRating();
             
             var movies = new List<Movie>();
+            
+            List<string> textToExamine = await SearchWikipediaAsync(actor.Name);
+            newPost.text = textToExamine;
+            
+            
+            // = await SearchWikipediaAsync((movie.Description));
+            
+            var analyzer = new SentimentIntensityAnalyzer();
+            int validResults = 0;
+            double resultsTotal = 0;
+            List<double> tempList = new List<double>();
+            
+            foreach (string textValue in textToExamine)
+            {
+                var results = analyzer.PolarityScores(textValue);
+                
+                if (results.Compound != 0)
+                {
+                    tempList.Add(results.Compound);
+                    resultsTotal += results.Compound;
+                    validResults++;
+                }
+            }
+
+            newPost.num = validResults;
+
+            newPost.sentiment = tempList;
+            
+            double avgResult = Math.Round(resultsTotal / validResults, 2);
+            ad.sentiment = avgResult.ToString() + ", " + CategorizeSentiment(avgResult);
+
             
             movies = await (from mt in _context.Movie
                 join am in _context.ActorMovie on mt.Id equals am.Id
@@ -67,6 +166,7 @@ namespace TheMovieDB.Controllers
                 select mt).ToListAsync();
             ad.movies = movies;
 
+            ad.postRatings = newPost;
  
             return View(ad);
         }
@@ -82,7 +182,7 @@ namespace TheMovieDB.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Age")] Actor actor, IFormFile ActorImage)
+        public async Task<IActionResult> Create([Bind("Id,Name,Age,Gender,Hyperlink")] Actor actor, IFormFile ActorImage)
         {
             ModelState.Remove(nameof(actor.ActorImage));
 
@@ -133,7 +233,7 @@ namespace TheMovieDB.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Age")] Actor actor, IFormFile ActorImage)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Age,Gender,Hyperlink")] Actor actor, IFormFile ActorImage)
         {
             if (id != actor.Id)
             {

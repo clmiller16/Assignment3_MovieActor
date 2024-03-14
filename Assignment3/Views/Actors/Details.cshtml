@@ -9,42 +9,41 @@
 <div>
     <h4>Actor</h4>
     <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.actor.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.actor.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.actor.Age)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.actor.Age)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.actor.Gender)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.actor.Gender)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.actor.Hyperlink)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.actor.Hyperlink)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.actor.ActorImage)
-        </dt>
-        <dd class="col-sm-10">
-            @if (Model.actor.ActorImage != null && Model.actor.ActorImage.Length != 0)
-            {
-                <img height="150" src="@Url.Action("GetActorPhoto", "Actors", new {Model.actor.Id})" />
-            }
-        </dd>
-    </dl>
+    
+    <div class="card" style="width: 18rem;">
+        <img class="card-img-top" src="@Url.Action("GetActorPhoto", "Actors", new {Model.actor.Id})" alt="Card image cap">
+        <div class="card-body">
+            <h5 class="card-title">@Html.DisplayFor(model => model.actor.Name)</h5>
+            <dl class="row">
+                <dt class = "col-sm-5">
+                    @Html.DisplayNameFor(model => model.actor.Age)
+                </dt>
+                <dd class = "col-sm-5">
+                    @Html.DisplayFor(model => model.actor.Age)
+                </dd>
+                <dt class = "col-sm-5">
+                    @Html.DisplayNameFor(model => model.actor.Gender)
+                </dt>
+                <dd class = "col-sm-10">
+                    @Html.DisplayFor(model => model.actor.Gender)
+                </dd>
+                <dt class = "col-sm-5">
+                    @Html.DisplayNameFor(model => model.actor.Hyperlink)
+                </dt>
+                <dd class = "col-sm-10">
+                    @Html.DisplayFor(model => model.actor.Hyperlink)
+                </dd>
+                <dt class = "col-sm-5">
+                    Sentiment
+                </dt>
+                <dd class = "col-sm-10">
+                    @Html.DisplayFor(model => model.sentiment)
+                </dd>
+            </dl>
+        </div>
+    </div>
 </div>
+<br>
 <div>
     <button class="btn btn-light"><a class="black-text" asp-action="Edit" asp-route-id="@Model?.actor.Id">Edit</a></button>
     <button class="btn btn-light"><a class="black-text" asp-action="Index">Back to List</a></button>
@@ -56,67 +55,93 @@
 </h1>
 <table id="indexTable" class="table">
     <thead>
-        <tr>
-            <th>
-                Title
-            </th>
-            <th>
-                Description
-            </th>
-            <th>
-                Director
-            </th>
-            <th>
-                Genre
-            </th>
-            <th>
-                Release Year
-            </th>
-            <th>
-                Hyperlink
-            </th>
-            <th>
-                Movie Image
-            </th>
-            <th></th>
-        </tr>
+    <tr>
+        <th>
+            Title
+        </th>
+        <th>
+            Description
+        </th>
+        <th>
+            Director
+        </th>
+        <th>
+            Genre
+        </th>
+        <th>
+            Release Year
+        </th>
+        <th>
+            Hyperlink
+        </th>
+        <th>
+            Movie Image
+        </th>
+        <th></th>
+    </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.movies)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Director)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Genre)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ReleaseDate)
-                </td>
-                <td>
-                    <a target="_blank" href="@Html.DisplayFor(modelItem => item.Hyperlink)">IMDb</a>
-                </td>
-                <td>
-                    @if (item.MovieImage != null && item.MovieImage.Length != 0)
-                    {
-                        <img height="150" src="@Url.Action("GetMoviePhoto", "Movies", new {item.Id})" />
-                    }
-                </td>
-                <td>
+    @foreach (var item in Model.movies)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Director)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Genre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReleaseDate)
+            </td>
+            <td>
+                <a target="_blank" href="@Html.DisplayFor(modelItem => item.Hyperlink)">IMDb</a>
+            </td>
+            <td>
+                @if (item.MovieImage != null && item.MovieImage.Length != 0)
+                {
+                    <img height="150" src="@Url.Action("GetMoviePhoto", "Movies", new {item.Id})" />
+                }
+            </td>
+            <td>
                     
                 <button class="btn btn-light" asp-action="Edit" asp-controller="Movies" asp-route-id="@item.Id"><a class="black-text" asp-action="Edit" asp-controller="Movies" asp-route-id="@item.Id">Edit</a></button>
                 <button class="btn btn-light" asp-action="Details" asp-controller="Movies" asp-route-id="@item.Id"><a class="black-text" asp-action="Details" asp-controller="Movies" asp-route-id="@item.Id">Details</a></button>
-                    @* <a asp-action="Edit" asp-controller="Movies" asp-route-id="@item.Id">Edit</a> | *@
-                    @* <a asp-action="Details" asp-controller="Movies" asp-route-id="@item.Id">Details</a> | *@
-                </td>
-            </tr>
-        }
+                @* <a asp-action="Edit" asp-controller="Movies" asp-route-id="@item.Id">Edit</a> | *@
+                @* <a asp-action="Details" asp-controller="Movies" asp-route-id="@item.Id">Details</a> | *@
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+<table id="indexTable" class="table">
+    <thead>
+    <tr>
+        <th>
+            Post
+        </th>
+        <th>
+            Sentiment
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <h1>Wikipedia Posts Referencing @Html.DisplayFor(model => model.actor.Name) </h1>
+    @for (int i = 0; i < Model.postRatings.num; i++)
+    {
+        <tr>
+            <td>
+                @Model.postRatings.text[i]
+            </td>
+            <td>
+                @Model.postRatings.sentiment[i]
+            </td>
+        </tr>
+    }
     </tbody>
 </table>

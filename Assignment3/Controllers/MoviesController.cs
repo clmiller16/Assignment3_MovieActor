@@ -138,7 +138,7 @@ namespace Assignment3.Controllers
             
             var actors = new List<Actor>();
             //Get the text from WikiPedia related to the Pet description
-            List<string> textToExamine = await SearchWikipediaAsync(movie.Description);
+            List<string> textToExamine = await SearchWikipediaAsync(movie.Title);
             newPost.text = textToExamine;
             
             
@@ -160,6 +160,8 @@ namespace Assignment3.Controllers
                     validResults++;
                 }
             }
+
+            newPost.num = validResults;
 
             newPost.sentiment = tempList;
             

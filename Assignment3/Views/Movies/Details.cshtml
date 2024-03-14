@@ -56,7 +56,7 @@
             }
         </dd>
                 <dt class = "col-sm-2">
-                    @Html.DisplayNameFor(model => model.sentiment)
+                    Sentiment
                 </dt>
                 <dd class = "col-sm-10">
                     @Html.DisplayFor(model => model.sentiment)
@@ -125,6 +125,7 @@
     }
     </tbody>
 </table>
+<h1>Wikipedia Posts Referencing @Html.DisplayFor(model => model.movie.Title) </h1>
 <table id="indexTable" class="table">
     <thead>
     <tr>
@@ -132,12 +133,12 @@
             Post
         </th>
         <th>
-            Score
+            Sentiment
         </th>
     </tr>
     </thead>
     <tbody>
-    @for (int i = 0; i < Model.postRatings.text.Count; i++)
+    @for (int i = 0; i < Model.postRatings.num; i++)
     {
         <tr>
             <td>
