@@ -44,7 +44,7 @@
             @Html.DisplayNameFor(model => model.movie.Hyperlink)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.movie.Hyperlink)
+            <a target="_blank" href="@Html.DisplayFor(model => model.movie.Hyperlink)">IMDb</a>
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.movie.MovieImage)

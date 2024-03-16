@@ -51,7 +51,10 @@
             @Html.DisplayNameFor(model => model.MovieImage)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MovieImage)
+            @if (Model.MovieImage != null && Model.MovieImage.Length != 0)
+                {
+                    <img height="150" src="@Url.Action("GetMoviePhoto", "Movies", new {Model.Id})" alt="image failed to load"/>
+                }
         </dd>
     </dl>
     
