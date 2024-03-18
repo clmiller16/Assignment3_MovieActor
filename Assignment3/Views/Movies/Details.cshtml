@@ -126,7 +126,7 @@
     </tbody>
 </table>
 <h1>Wikipedia Posts Referencing @Html.DisplayFor(model => model.movie.Title) </h1>
-<table id="indexTable" class="table">
+<table id="indexTable2" class="table">
     <thead>
     <tr>
         <th>
@@ -151,3 +151,13 @@
     }
     </tbody>
 </table>
+@section Scripts {
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.1/css/dataTables.dataTables.min.css" integrity="sha384-zUxWDVAcow8yNu+q4VFsyZA3qWsKKGdWPW0SVjaR12LQze4SY8Nr75US6VDhbWkf" crossorigin="anonymous">
+    <script src="https://cdn.datatables.net/2.0.1/js/dataTables.min.js" integrity="sha384-O1CwIpQyArpIVIf/MmRsfivHkHhSlKgnk+wOxIMeEqObjH8MoV/Ox0ue6FlCwucf" crossorigin="anonymous"></script>
+    <script>
+            $(document).ready(function() {
+                $('#indexTable').DataTable();
+                $('#indexTable2').DataTable();
+            });
+    </script>
+}
